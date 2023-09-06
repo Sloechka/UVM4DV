@@ -23,7 +23,6 @@ endclass
 function void env::build_phase(uvm_phase phase);
     super.build_phase(phase);
     m_my_top_comp_0 = my_top_comp::type_id::create("m_my_top_comp_0", this);
-    // insert component creation here -->
-    m_my_top_comp_1 = my_top_comp::type_id::create("m_my_top_comp_1", this);
-    m_my_top_comp_2 = my_top_comp::type_id::create("m_my_top_comp_2", this);
+    // insert component creation here --> (step1)
+
 endfunction
