@@ -8,7 +8,8 @@ class env extends uvm_env;
     
     my_top_comp m_my_top_comp_0;
     // insert component declaration here --> (step 1)
-
+    my_top_comp m_my_top_comp_1;
+    my_top_comp m_my_top_comp_2;
    
     function new( string name , uvm_component parent );
         super.new( name , parent );
@@ -23,5 +24,7 @@ function void env::build_phase(uvm_phase phase);
     super.build_phase(phase);
     m_my_top_comp_0 = my_top_comp::type_id::create("m_my_top_comp_0", this);
     // insert component creation here --> (step 1)
-
+    m_my_top_comp_1 = my_top_comp::type_id::create("m_my_top_comp_1", this);
+    m_my_top_comp_2 = my_top_comp::type_id::create("m_my_top_comp_2", this);
+        
 endfunction
