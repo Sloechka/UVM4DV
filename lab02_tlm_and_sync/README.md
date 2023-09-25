@@ -456,18 +456,18 @@ endclass
 
 |Методы|Описание|
 |:---|--|
-|``` virtual task put( input T1 t );```| Блокирующая[*](#Blocking) отправка транзакции |
-|``` virtual task get( output T2 t ); ```| Блокирующее[*](#Blocking) получение транзакции  |
-|``` virtual task peek( output T2 t ); ```| Блокирующий[*](#Blocking) просмотр[*](#See) транзакции |
-|``` virtual function bit try_put( input T1 t ); ```| Неблокирующая[*](#Non-Blocking) отправка транзакции |
-|``` virtual function bit can_put(); ```| Статус возможности неблокирующе[*](#Non-Blocking) отправить транзакцию |
-|``` virtual function bit try_get( output T2 t ); ```| Неблокирующее[*](#Non-Blocking) получение транзакции |
-|``` virtual function bit can_get(); ```| Статус возможности неблокирующе[*](#Non-Blocking) получить транзакцию |
-|``` virtual function bit try_peek( output T2 t ); ```| Неблокирующий[*](#Non-Blocking) просмотр[*](#See) транзакции |
-|``` virtual function bit can_peek(); ```| Статус возможности неблокирующе[*](#Non-Blocking) просмотреть[*](#See) транзакцию |
-|``` virtual task transport( input T1 req , output T2 rsp ); ```| Блокирующая[*](#Blocking) одновременная отправка и получение транзакции |
-|``` virtual function bit nb_transport(input T1 req, output T2 rs );```| Неблокирующая[*](#Non-Blocking) одновременная отправка и получение транзакции |
-|``` virtual function void write( input T1 t ); ```| Блокирующая[*](#Blocking) широковещательная отправка |
+|```virtual task put( input T1 t );```| Блокирующая[*](#Blocking) отправка транзакции |
+|```virtual task get( output T2 t ); ```| Блокирующее[*](#Blocking) получение транзакции  |
+|```virtual task peek( output T2 t ); ```| Блокирующий[*](#Blocking) просмотр[*](#See) транзакции |
+|```virtual function bit try_put( input T1 t ); ```| Неблокирующая[*](#Non-Blocking) отправка транзакции |
+|```virtual function bit can_put(); ```| Статус возможности неблокирующе[*](#Non-Blocking) отправить транзакцию |
+|```virtual function bit try_get( output T2 t ); ```| Неблокирующее[*](#Non-Blocking) получение транзакции |
+|```virtual function bit can_get(); ```| Статус возможности неблокирующе[*](#Non-Blocking) получить транзакцию |
+|```virtual function bit try_peek( output T2 t ); ```| Неблокирующий[*](#Non-Blocking) просмотр[*](#See) транзакции |
+|```virtual function bit can_peek(); ```| Статус возможности неблокирующе[*](#Non-Blocking) просмотреть[*](#See) транзакцию |
+|```virtual task transport( input T1 req , output T2 rsp ); ```| Блокирующая[*](#Blocking) одновременная отправка и получение транзакции |
+|```virtual function bit nb_transport(input T1 req, output T2 rs );```| Неблокирующая[*](#Non-Blocking) одновременная отправка и получение транзакции |
+|```virtual function void write( input T1 t ); ```| Блокирующая[*](#Blocking) широковещательная отправка |
 
 ||
 |:---|
