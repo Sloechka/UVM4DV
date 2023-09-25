@@ -61,7 +61,7 @@ _Так выделяется разбор примеров._
 
 По сути своей UVM стандартизует [архитектуру верификационного ООП-окружения](https://github.com/MPSU/SV4DV/tree/master/lab_03%20SystemVerilog%20OOP#12-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%BD%D0%B0%D1%8F-%D1%81%D1%85%D0%B5%D0%BC%D0%B0-%D0%B2%D0%B5%D1%80%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE-%D0%BE%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F-%D1%81-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%D0%BC-%D0%BE%D0%BE%D0%BF), а также методы конфигурации и взаимодействия его компонентов.
 
-<img width="800" height="645" src="../.img/lab_02/env1.png">
+<img align="center" width="800" height="645" src="../.img/lab_02/env1.png">
 
 ### TBV в UVM
 
@@ -77,7 +77,7 @@ _Так выделяется разбор примеров._
 
 _Пример._
 
-```verilog
+```systemverilog
 module class_param_0;
 
     class my_param_class #(parameter DEFAULT = 5);
@@ -131,7 +131,7 @@ _Результат выполнения:_
 
 _Пример._
 
-```verilog
+```systemverilog
 module class_param_1;
 
     class my_param_class #(type T = int);
@@ -164,7 +164,7 @@ _Например, для `T` = `bit` класс будет выглядеть �
 
 </div>
 
-```verilog
+```systemverilog
 class my_param_class;
 
     bit my_data;
@@ -264,11 +264,11 @@ _В данном примере `port` класса `Producer` иницииру�
 | `TLM-API` (Application Programming Interface) по своей сути является набором функций (`function`) и задач (`task`) для передачи транзакций между UVM-объектами (в том числе UVM-портами). Подробный разбор методов `TLM-API` представлен [здесь](#72-tlm-api). |
 |:---|
 
-В каждом UVM-порте существует возможность вызова предопределенных TLM-API функций.
+В каждом TLM-порте существует возможность вызова предопределенных TLM-API функций.
 
 _Пример._
 
-```verilog
+```systemverilog
 class producer extends uvm_component;
     `uvm_component_utils(producer)
 
@@ -329,7 +329,7 @@ _Пример похож на пример из [раздела 6.1.](#61-tlm-п
 
 _`uvm_ports.svh`_
 
-```verilog
+```systemverilog
 
 ...
 
@@ -351,7 +351,7 @@ endclass
 
 _`uvm_exports.svh`_
 
-```verilog
+```systemverilog
 
 ...
 
@@ -373,7 +373,7 @@ endclass
 
 _`uvm_imps.svh`_
 
-```verilog
+```systemverilog
 
 ...
 
@@ -397,7 +397,7 @@ endclass
 
 _`uvm_port_base.svh`_
 
-```verilog
+```systemverilog
 virtual class uvm_port_base #(type IF=uvm_void) extends IF;
 ```
 
@@ -407,7 +407,7 @@ virtual class uvm_port_base #(type IF=uvm_void) extends IF;
 
 _`uvm_tlm_ifs.svh`_
 
-```verilog
+```systemverilog
 virtual class uvm_tlm_if_base #(type T1=int, type T2=int);
 
   ...
@@ -487,7 +487,7 @@ endclass
 
 _В качестве примера рассмотрим реализацию `uvm_put_port`. Данный класс в файле `uvm_ports.svh` реализуется следующим образом:_
 
-```verilog
+```systemverilog
     ...
 
     class uvm_put_port #(type T=int)
@@ -501,7 +501,7 @@ _В качестве примера рассмотрим реализацию `u
 
 _Если раскрыть defines:_
 
-```verilog
+```systemverilog
     ...
 
     class uvm_put_port #(type T=int)
@@ -538,7 +538,7 @@ _Класс `uvm_blocking_put_port` будет отличаться от `uvm_pu
 
 </div>
 
-```verilog
+```systemverilog
     ...
 
     class uvm_blocking_put_port #(type T=int)
@@ -581,7 +581,7 @@ _Класс `uvm_blocking_put_port` будет отличаться от `uvm_pu
 
 _Пример соединения._
 
-```verilog
+```systemverilog
     class Producer extends uvm_component;
         `uvm_component_utils(Producer)
 
