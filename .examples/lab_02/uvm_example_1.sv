@@ -3,8 +3,8 @@ module uvm_example_1;
     import uvm_pkg::*;
     `include "uvm_macros.svh"
 
-    class my_comp_1 extends uvm_component;
-        `uvm_component_utils(my_comp_1)
+    class Producer extends uvm_component;
+        `uvm_component_utils(Producer)
 
         uvm_blocking_put_port#(int) p_port;
 
@@ -26,10 +26,10 @@ module uvm_example_1;
 
     endclass
 
-    class my_comp_2 extends uvm_component;
-        `uvm_component_utils(my_comp_2)
+    class Wrapper2 extends uvm_component;
+        `uvm_component_utils(Wrapper2)
 
-        my_comp_1 comp_1;
+        Producer prod;
 
         uvm_blocking_put_export#(int) p_export;
 
@@ -38,27 +38,27 @@ module uvm_example_1;
         endfunction
 
         virtual function void build_phase(uvm_phase phase);
-            comp_1 = my_comp_1::type_id::create("comp_1", this);
+            prod = Producer::type_id::create("prod", this);
             p_export = new("p_export", this);
         endfunction
 
         virtual function void connect_phase(uvm_phase phase);
-            comp_1.p_port.connect(p_export);
+            prod.p_port.connect(p_export);
         endfunction
 
     endclass
 
-    class my_comp_3 extends uvm_component;
-        `uvm_component_utils(my_comp_3)
+    class Consumer extends uvm_component;
+        `uvm_component_utils(Consumer)
 
-        uvm_blocking_put_imp#(int, my_comp_3) p_export;
+        uvm_blocking_put_imp#(int, Consumer) p_imp;
 
         function new(string name, uvm_component parent);
             super.new(name, parent);
         endfunction
 
         virtual function void build_phase(uvm_phase phase);
-            p_export = new("p_export", this);
+            p_imp = new("p_imp", this);
         endfunction
 
         virtual task put(int t);
@@ -68,10 +68,10 @@ module uvm_example_1;
 
     endclass
 
-    class my_comp_4 extends uvm_component;
-        `uvm_component_utils(my_comp_4)
+    class Wrapper3 extends uvm_component;
+        `uvm_component_utils(Wrapper3)
 
-        my_comp_3 comp_3;
+        Consumer cons;
 
         uvm_blocking_put_export#(int) p_export;
 
@@ -80,35 +80,33 @@ module uvm_example_1;
         endfunction
 
         virtual function void build_phase(uvm_phase phase);
-            comp_3 = my_comp_3::type_id::create("comp_3", this);
+            cons = Consumer::type_id::create("cons", this);
             p_export = new("p_export", this);
         endfunction
 
         virtual function void connect_phase(uvm_phase phase);
-            p_export.connect(comp_3.p_export);
+            p_export.connect(cons.p_imp);
         endfunction
 
     endclass
 
-    class my_test extends uvm_test;
-        `uvm_component_utils(my_test)
+    class Wrapper1 extends uvm_test;
+        `uvm_component_utils(Wrapper1)
 
-        my_comp_2 comp_2;
-        my_comp_4 comp_4;
+        Wrapper2 wr2;
+        Wrapper3 wr3;
 
         function new(string name, uvm_component parent);
             super.new(name, parent);
         endfunction
 
         virtual function void build_phase(uvm_phase phase);
-            comp_2 = my_comp_2::type_id::create("comp_2", this);
-            comp_4 = my_comp_4::type_id::create("comp_4", this);
+            wr2 = Wrapper2::type_id::create("wr2", this);
+            wr3 = Wrapper3::type_id::create("wr3", this);
         endfunction
 
         virtual function void connect_phase(uvm_phase phase);
-            $display(comp_2.p_export);
-            $display(comp_4.p_export);
-            comp_2.p_export.connect(comp_4.p_export);
+            wr2.p_export.connect(wr3.p_export);
         endfunction
 
     endclass
