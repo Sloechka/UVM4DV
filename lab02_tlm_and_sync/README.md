@@ -31,6 +31,7 @@
       - [8.5. Паттерны и типы соединений](#85-паттерны-и-типы-соединений)
       - [8.6. Направление соединения](#86-направление-соединения)
       - [8.7. Типовая схема соединения TLM-портов](#87-типовая-схема-соединения-tlm-портов)
+    - [9. UVM Analysis `port`, `export`, `imp`](#9-uvm-analysis-port-export-imp)
   - [Список ссылок](#список-ссылок)
 
 ## Цель
@@ -839,11 +840,287 @@ _В данном примере `uvm_blocking_put_imp` подключена к �
 
 #### 8.4. Реализация `TLM-API` при подключении имплементации (`imp`)
 
+**При передвижении транзакции по иерархии конечной ее точкой всегда оказывается имплементация (`imp`).** К ней уже больше не подключается никакой TLM-порт.
 
+Если в написанном вами коде встречается
+
+```
+    <имплементация>.connect(...)
+```
+
+то вы явно делаете что-то не так.
+
+
+|Имплементация, в отличие от `port` и `export` не вызывает метод `TLM-API` следующего за ней TLM-порта. **Имплементация вызывает метод объекта класса, который предоставляет реализацию имплементации (то есть того класса, в котором определен метод, который будет вызывать имплементация).**|
+|:---|
+
+Если обратиться к файлу `uvm_imps.svh`:
+
+_`uvm_imps.svh`_
+
+```systemverilog
+
+...
+
+class uvm_blocking_put_imp #(type T=int, type IMP=int)
+  extends uvm_port_base #(uvm_tlm_if_base #(T,T));
+  `UVM_IMP_COMMON(`UVM_TLM_BLOCKING_PUT_MASK,"uvm_blocking_put_imp",IMP)
+  `UVM_BLOCKING_PUT_IMP (m_imp, T, t)
+endclass
+
+...
+
+class uvm_put_imp #(type T=int, type IMP=int)
+  extends uvm_port_base #(uvm_tlm_if_base #(T,T));
+  `UVM_IMP_COMMON(`UVM_TLM_PUT_MASK,"uvm_put_imp",IMP)
+  `UVM_PUT_IMP (m_imp, T, t)
+endclass
+
+...
+
+class uvm_get_imp #(type T=int, type IMP=int)
+  extends uvm_port_base #(uvm_tlm_if_base #(T,T));
+  `UVM_IMP_COMMON(`UVM_TLM_GET_MASK,"uvm_get_imp",IMP)
+  `UVM_GET_IMP (m_imp, T, t)
+endclass
+
+...
+
+```
+
+То можно заметить, что **для параметризации имплементации требуется 2 типа**: 
+
+- тип передаваемой транзакции;
+- тип класса, который предоставляет реализацию имплементации (класса, в котором определен метод, который будет вызывать имплементация).
+
+Также стоит заметить, что **аргументы, передаваемые в `define` отличаются лишь маской и именем.**
+
+Раскроем `define` в `uvm_blocking_put_imp`:
+
+```systemverilog
+class uvm_blocking_put_imp #(type T=int, type IMP=int)
+  extends uvm_port_base #(uvm_tlm_if_base #(T,T));
+  
+  local IMP m_imp;
+  function new (string name, IMP imp);
+    super.new (name, imp, UVM_IMPLEMENTATION, 1, 1);
+    m_imp = imp;
+    m_if_mask = `UVM_TLM_BLOCKING_PUT_MASK;
+  endfunction
+  
+  task put (T t);
+    m_imp.put(arg);
+  endtask
+
+endclass
+```
+
+Раскроем `define` в `uvm_get_imp`:
+
+```systemverilog
+class uvm_get_imp #(type T=int, type IMP=int)
+  extends uvm_port_base #(uvm_tlm_if_base #(T,T));
+  
+  local IMP m_imp;
+  function new (string name, IMP imp);
+    super.new (name, imp, UVM_IMPLEMENTATION, 1, 1);
+    m_imp = imp;
+    m_if_mask = `UVM_TLM_GET_MASK;
+  endfunction
+  
+  task get (output T t);
+    m_imp.get(t);
+  endtask
+
+  function bit try_get (output T t);
+    return m_imp.try_get(t);
+  endfunction
+
+  function bit can_get();
+    return m_imp.can_get();
+  endfunction
+
+endclass
+```
+
+В обоих случаях имплементация вызывает одноименный метод `TLM-API` объекта, на который указывает `m_imp` типа `IMP`. После создания экземпляра имплеменатции, поле `m_imp` инициализируется вторым аргументом, переданным в конструктор `new()`. Для всех без исключения имплементаций ситуация аналогична.
+
+Можно сделать вывод:
+
+|Имплементация (`imp`) вызывает одноименный метод `TLM-API` объекта типа `IMP` (второй аргумент параметризации имплементации). Указатель на объект передается вторым аргументом метода `new()` имплементации.|
+|:---|
+
+_Пример._
+
+```systemverilog
+    class Consumer extends uvm_component;
+        `uvm_component_utils(Consumer)
+
+        uvm_blocking_put_imp#(int, Consumer) p_imp;
+
+        ...
+
+        virtual function void build_phase(uvm_phase phase);
+            p_imp = new("p_imp", this);
+        endfunction
+
+        // This class has 'uvm_blocking_put_imp' with
+        // 'Consumer' implementation provider type and
+        // 'this' pointer in implementation 'new()'
+        // method. So it must implement 'put' task
+        virtual task put(int t);
+            `uvm_info(get_name(),
+                $sformatf("Got %0d", t), UVM_LOW);
+        endtask
+
+    endclass
+```
+
+_В данном примере в классе `Consumer` определяется имплементация `uvm_blocking_put_imp`, параметризованная типом транзакции `int` и типом реализующего имплементацию класса `Consumer`. Класс `Consumer` обязан теперь поддерживать реализацию `UVM-TLM` для `uvm_blocking_put_imp`, то есть задачу `put()` (см. иерархию в [разделе 7.3](#73-реализация-tlm-api-в-tlm-портах)). В качестве указателя на объект, который реализует имплементацию, передается `this`, то есть указатель на текущий класс._
+
+Стоит заметить, что **данный пример является демонстрацией самого часто используемого сценария реализации имплементации**.
+
+_Пример._
+
+```systemverilog
+    class Internal extends uvm_component;
+        `uvm_component_utils(Internal)
+
+        function new(string name, uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function bit try_put(int t);
+            `uvm_info(get_name(),
+                $sformatf("Got %0d", t), UVM_LOW);
+            return 1;
+        endfunction
+
+        virtual function bit can_put();
+            return 1;
+        endfunction
+
+    endclass
+
+    class Consumer extends uvm_component;
+        `uvm_component_utils(Consumer)
+
+        Internal intr;
+
+        uvm_nonblocking_put_imp#(int, Internal) p_imp;
+
+        function new(string name, uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            intr = Internal::type_id::create("intr", this);
+            p_imp = new("p_imp", this.intr);
+        endfunction
+
+    endclass
+```
+
+_В данном примере реализация имплементации `uvm_nonblocking_put_imp` выннесена в класс типа `Internal`. Ссылка на объект класса передается в конструктор при помощи `this.intr`._
+
+Стоит отметить, что, если, например, не реализовывать задачу `can_put()` в классе `Internal`, то при запуске симуляции будет следующая диагностика:
+
+```
+# Loading mtiUvm.questa_uvm_pkg(fast)
+# ** Error: (vsim-3567) <UVM_ROOT>/src/tlm1/uvm_imps.svh(91): No field named 'can_put'.
+```
+
+Что говорит о необходимости поддержки классом `Internal` всех методов `UVM-TLM`, которые реализует `uvm_nonblocking_put_imp`.
 
 #### 8.5. Множественная реализация `TLM-API` в рамках одного UVM-объекта (`uvm_*_imp_decl`)
 
+|В рамках одного UVM-объекта реализации имплементации можно реализовывать несколько реализаций. Для этого используется макрос `uvm_*_imp_decl`.|
+|:---|
 
+```systemverilog
+`define uvm_blocking_put_imp_decl(SFX) \
+class uvm_blocking_put_imp``SFX #(type T=int, type IMP=int) \
+  extends uvm_port_base #(uvm_tlm_if_base #(T,T)); \
+  `UVM_IMP_COMMON(`UVM_TLM_BLOCKING_PUT_MASK,`"uvm_blocking_put_imp``SFX`",IMP) \
+  `UVM_BLOCKING_PUT_IMP_SFX(SFX, m_imp, T, t) \
+endclass
+```
+
+Если раскрыть `define`:
+
+```systemverilog
+`define uvm_blocking_put_imp_decl(SFX)
+class uvm_blocking_put_imp``SFX #(type T=int, type IMP=int)
+  extends uvm_port_base #(uvm_tlm_if_base #(T,T));
+
+  local IMP m_imp;
+  function new (string name, IMP imp);
+    super.new (name, imp, UVM_IMPLEMENTATION, 1, 1);
+    m_imp = imp;
+    m_if_mask = `UVM_TLM_BLOCKING_PUT_MASK;
+  endfunction
+
+  task put( input TYPE arg);
+    imp.put``SFX( arg);
+  endtask
+
+endclass
+```
+
+Если в качестве примера определить `SFX` = `_first`:
+
+```systemverilog
+class uvm_blocking_put_imp_first #(type T=int, type IMP=int)
+  extends uvm_port_base #(uvm_tlm_if_base #(T,T));
+
+  local IMP m_imp;
+  function new (string name, IMP imp);
+    super.new (name, imp, UVM_IMPLEMENTATION, 1, 1);
+    m_imp = imp;
+    m_if_mask = `UVM_TLM_BLOCKING_PUT_MASK;
+  endfunction
+
+  task put( input TYPE arg);
+    imp.put_first( arg);
+  endtask
+
+endclass
+```
+
+Тогда для поддержки такой имплементации в UVM-объекте, реализующем имплеметнацию, необходима реализация задачи `put_first()`.
+
+То есть:
+
+|Для поддержки имплементации при помощи `uvm_*_imp_decl(SFX)` в UVM-объекте, реализующем данную имплементацию, необходима реализация всех методов `TLM-API` этой имплементации с постфиксом `SFX`.|
+|:---|
+
+_Пример._
+
+```systemverilog
+    `uvm_blocking_put_imp_decl(_first)
+
+    class Consumer extends uvm_component;
+        `uvm_component_utils(Consumer)
+
+        uvm_blocking_put_imp_first#(int, Consumer)  p_imp_first;
+
+        function new(string name, uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            p_imp_first = new("p_imp_first", this);
+        endfunction
+
+        virtual task put_first(int t);
+            `uvm_info(get_name(),
+                $sformatf("Got first %0d", t), UVM_LOW);
+        endtask
+
+    endclass
+```
+
+**Наиболее частое использование `uvm_*_imp_decl` характерно для `uvm_analysis_imp`**. Подробнее про Analysis UVM-порты написано в [разделе 9](#9-uvm-analysis-port-export-imp).
 
 #### 8.5. Паттерны и типы соединений
 
@@ -970,6 +1247,8 @@ _Соединение для `Wrapper1`, который содержит `Wrappe
 _Заметим, что соединение производится в форме `wr2.p_export.connect(wr3.p_export)`, где, очевидно, источником является `p_export` класса `Wrapper2`, а приемником на данном уровне иерархии является `p_export` класса `Wrapper3`._
 #### 8.7. Типовая схема соединения TLM-портов
 
+
+### 9. UVM Analysis `port`, `export`, `imp`
 
 
 ## Список ссылок
