@@ -32,6 +32,8 @@
       - [8.6. Направление соединения](#86-направление-соединения)
       - [8.7. Типовая схема соединения TLM-портов](#87-типовая-схема-соединения-tlm-портов)
     - [9. UVM Analysis `port`, `export`, `imp`](#9-uvm-analysis-port-export-imp)
+    - [10. Дополнительные примеры](#10-дополнительные-примеры)
+  - [Лабораторная работа](#лабораторная-работа)
   - [Список ссылок](#список-ссылок)
 
 ## Цель
@@ -84,7 +86,7 @@ _Так выделяется разбор примеров._
 |В SystemVerilog классы, так же, как и модули, можно параметризовывать.|
 |:---|
 
-_Пример._
+_Пример (`.examples/lab_02/class_param_0.sv`)._._
 
 ```systemverilog
 module class_param_0;
@@ -138,7 +140,7 @@ _Результат выполнения:_
 
 Для понимания параметризации типами подробно разберем пример.
 
-_Пример._
+_Пример (`.examples/lab_02/class_param_1.sv`)._
 
 ```systemverilog
 module class_param_1;
@@ -234,29 +236,29 @@ _Результат выполнения:_
 
 UVM TLM 1.0 **состоит из**:
 
-- TLM-портов:
+- [TLM-портов](#61-tlm-порты):
   - `port`;
   - `export`;
   - `imp`.
-- TLM-API;
-- TLM-FIFO.
+- [TLM-API](#62-tlm-api);
+- [TLM-FIFO](#63-tlm-fifo).
 
 #### 6.1. TLM-порты
 
-|TLM-порты подразделяются на **порты (`port`)**, **экспорты (`export`)** и **имплементации (`imp`)**. Применимость каждого типа, его обозначения на рисунках и ссылки на подробный разбор приведены в таблице ниже.|
+|TLM-порты подразделяются на **порты (`port`)**, **экспорты (`export`)** и **имплементации (`imp`)**. Применимость каждого типа и его обозначения на рисунках приведены в таблице ниже.|
 |:---|
 
-|Тип     | Применимость                                              | Обозначение | Подробнее |
-|:-------|-----------------------------------------------------------|---|--|
-| `port` | Управление потоком данных (отправка или запрос транзакций) и направление транзакций между слоями иерархии | <img align="center" src="../.img/lab_02/port.svg">  | [Ссылка]() |
-|`export`| Направление транзакций между слоями иерархии              | <img align="center" src="../.img/lab_02/export.svg">  | [Ссылка]() |
-|`imp`   | Реализация отправки или запроса транзакций                | <img align="center" src="../.img/lab_02/imp.svg">  | [Ссылка]() |
+|Тип     | Применимость                                              | Обозначение |
+|:-------|-----------------------------------------------------------|---|
+| `port` | Управление потоком данных (отправка или запрос транзакций) и направление транзакций между слоями иерархии | <img align="center" src="../.img/lab_02/port.svg">  |
+|`export`| Направление транзакций между слоями иерархии              | <img align="center" src="../.img/lab_02/export.svg">  |
+|`imp`   | Реализация отправки или запроса транзакций                | <img align="center" src="../.img/lab_02/imp.svg">  |
 
 Иными словами, `port` служит для инициации отправки или получения транзакции, а также для направления транзакций между слоями иерархии.
 `export` служит только для направления запросов от нужного `port` к нужной `imp` внутри иерархии окружения.
 `imp` реализует отправку и получение транзакции (условно говоря, `port` "просит" `imp` выполнить действие, а уже как его выполнять (то есть его реализацию) - определяет `imp`).
 
-_Пример._
+_Пример (`.examples/lab_02/uvm_example_1.sv`)._)._
 
 <img width="800" height="400" src="../.img/lab_02/port_export.gif">
 
@@ -441,7 +443,7 @@ _`try_put()` отправляет `value` по иерархии, но тольк
 
 #### 6.3. TLM-FIFO
 
-|`TLM-FIFO` по своей сути является классом, в который инкапсулирована имплементация (`imp`) и который содержит "программную модель FIFO", которая реализуется при помощи `mailbox`. Подробный разбор `TLM-FIFO` представлен [здесь]().|
+|`TLM-FIFO` по своей сути является классом, в который инкапсулирована имплементация (`imp`) и который содержит "программную модель FIFO", которая реализуется при помощи `mailbox`.|
 |:---|
 
 _Пример._
@@ -982,7 +984,7 @@ _В данном примере в классе `Consumer` определяет�
 
 Стоит заметить, что **данный пример является демонстрацией самого часто используемого сценария реализации имплементации**.
 
-_Пример._
+_Пример (`.examples/lab_02/uvm_example_3.sv`)._
 
 ```systemverilog
     class Internal extends uvm_component;
@@ -1096,27 +1098,33 @@ endclass
 |Для поддержки имплементации при помощи `uvm_*_imp_decl(SFX)` в UVM-объекте, реализующем данную имплементацию, необходима реализация всех методов `TLM-API` этой имплементации с постфиксом `SFX`.|
 |:---|
 
-_Пример._
+_Пример (`.examples/lab_02/uvm_example_4.sv`)._
 
 ```systemverilog
     `uvm_blocking_put_imp_decl(_first)
+    `uvm_blocking_put_imp_decl(_second)
 
     class Consumer extends uvm_component;
         `uvm_component_utils(Consumer)
 
         uvm_blocking_put_imp_first#(int, Consumer)  p_imp_first;
+        uvm_blocking_put_imp_second#(int, Consumer) p_imp_second;
 
-        function new(string name, uvm_component parent);
-            super.new(name, parent);
-        endfunction
+        ...
 
         virtual function void build_phase(uvm_phase phase);
             p_imp_first = new("p_imp_first", this);
+            p_imp_second = new("p_imp_second", this);
         endfunction
 
         virtual task put_first(int t);
             `uvm_info(get_name(),
                 $sformatf("Got first %0d", t), UVM_LOW);
+        endtask
+
+        virtual task put_second(int t);
+            `uvm_info(get_name(),
+                $sformatf("Got second %0d", t), UVM_LOW);
         endtask
 
     endclass
@@ -1249,9 +1257,238 @@ _Соединение для `Wrapper1`, который содержит `Wrappe
 _Заметим, что соединение производится в форме `wr2.p_export.connect(wr3.p_export)`, где, очевидно, источником является `p_export` класса `Wrapper2`, а приемником на данном уровне иерархии является `p_export` класса `Wrapper3`._
 #### 8.7. Типовая схема соединения TLM-портов
 
+|В типовой схеме соединения источника и приемника в иерархии, при движении "вверх" используются порты (`port`), а при движении "вниз" экспорты (`export`).|
+|:---|
 
+<img width="800" src="../.img/lab_02/tlm_hier_1.svg">
+
+Стоит отметить, что использование портов (`port`) при движении вверх является неким негласным соглашением. **При движении вверх по иерархии также можно использовать экспорты (`export`)**.
+
+<img width="800" src="../.img/lab_02/tlm_hier_2.svg">
 
 ### 9. UVM Analysis `port`, `export`, `imp`
+
+Особого упоминания требуют Analysis TLM-порты.
+
+|Analysis TLM-порты реализуют широковещательный протокол отправки транзакций в окружении. Для этого используется `TLM-API` метод `write()`.|
+|:---|
+
+<img width="800" src="../.img/lab_02/tlm_con_2.gif">
+
+Analysis TLM-порты состоят из:
+- `uvm_analysis_port`;
+- `uvm_analysis_export`;
+- `uvm_analysis_imp`.
+
+Если обращаться к файлу `uvm_analysis_port.svh`, то **реализация `TLM-API` для имплементации (`imp`) достаточно типична** (вызов метода объекта, который предоставляет реализацию имплементации).
+
+```systemverilog
+function void write (input T t);
+    m_imp.write (t);
+endfunction
+```
+
+А вот для `port` и `export` она отличается от "стандартной".
+
+```systemverilog
+function void write (input T t);
+    uvm_tlm_if_base # (T, T) tif;
+    for (int i = 0; i < this.size(); i++) begin
+        tif = this.get_if (i);
+        if ( tif == null )
+            uvm_report_fatal ("NTCONN", {"No uvm_tlm interface is connected to" ...
+        tif.write (t);
+    end 
+endfunction
+```
+
+Анализируя код, можно подтвердить, что **`port` и `export` траслируют одну и ту же транзакцию во все подключенные к ним дальше по иерерахии TLM-порты.**
+
+Таким образом, **вызывая метод `write()` источника, мы отправляем транзакцию во все приемники, подключенные к нему через `TLM`.**
+
+|Важно заметить, что в методе `write()` отправляемая транзакция не копируется в прямом смысле этого слова, а каждому TLM-порту просто передается указатель на одну и ту же транзакцию. Так что `негласным правилом является копирование транзакции приемником до начала работы с ней (применительно к транзакциям, которые является объектами некоего класса)`. В противном случае, обращаясь к оригинальной транзакции, один приемник влияет на данные в другом приемнике, так как они оба получают указатель на одну и ту же транзакцию. Реализация такого подхода показана в [примере ниже](#AnalysisExample).|
+|:---|
+
+<span id="AnalysisExample"> 
+_Пример._
+</span>
+
+<img width="800" src="../.img/lab_02/port_export_analysis.svg">
+
+```systemverilog
+    class Transaction extends uvm_object;
+        `uvm_object_utils(Transaction)
+
+        rand bit        req;
+        rand bit        ack;
+        rand bit [31:0] data;
+
+        function new(string name = "");
+            super.new(name);
+        endfunction
+
+        virtual function string convert2string();
+            string str;
+            str = {str, $sformatf("\nreq : %1b",   req )};
+            str = {str, $sformatf("\nack : %1b",   ack )};
+            str = {str, $sformatf("\ndata: 0x%8h", data)};
+            return str;
+        endfunction
+
+    endclass
+
+    class Producer extends uvm_component;
+        `uvm_component_utils(Producer)
+
+        // Transaction handle
+        Transaction tr;
+
+        uvm_analysis_port#(Transaction) p_port;
+
+        function new(string name, uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            p_port = new("p_port", this);
+        endfunction
+
+        virtual task run_phase(uvm_phase phase);
+            phase.raise_objection(this);
+            repeat(5) begin
+                tr = new("tr");
+                void'(tr.randomize());
+                p_port.write(tr);
+            end
+            phase.drop_objection(this);
+        endtask
+
+    endclass
+
+    class Wrapper2 extends uvm_component;
+        `uvm_component_utils(Wrapper2)
+
+        Producer prod;
+
+        uvm_analysis_export#(Transaction) p_export;
+
+        function new(string name, uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            prod = Producer::type_id::create("prod", this);
+            p_export = new("p_export", this);
+        endfunction
+
+        virtual function void connect_phase(uvm_phase phase);
+            prod.p_port.connect(p_export);
+        endfunction
+
+    endclass
+
+    `uvm_analysis_imp_decl(_0)
+    `uvm_analysis_imp_decl(_1)
+    `uvm_analysis_imp_decl(_2)
+
+    class Consumer extends uvm_component;
+        `uvm_component_utils(Consumer)
+
+        uvm_analysis_imp_0#(Transaction, Consumer) p_imp_0;
+        uvm_analysis_imp_1#(Transaction, Consumer) p_imp_1;
+        uvm_analysis_imp_2#(Transaction, Consumer) p_imp_2;
+
+        function new(string name, uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            p_imp_0 = new("p_imp_0", this);
+            p_imp_1 = new("p_imp_1", this);
+            p_imp_2 = new("p_imp_2", this);
+        endfunction
+
+        virtual function void write_0(Transaction t);
+            Transaction t_ = new("tr");
+            t_.copy(t);
+            `uvm_info(get_name(),
+                $sformatf("Got 0: %s", t.convert2string()), UVM_LOW);
+        endfunction
+
+        virtual function void write_1(Transaction t);
+            Transaction t_ = new("tr");;
+            t_.copy(t);
+            `uvm_info(get_name(),
+                $sformatf("Got 1: %s", t.convert2string()), UVM_LOW);
+        endfunction
+
+        virtual function void write_2(Transaction t);
+            Transaction t_ = new("tr");;
+            t_.copy(t);
+            `uvm_info(get_name(),
+                $sformatf("Got 2: %s", t.convert2string()), UVM_LOW);
+        endfunction
+
+    endclass
+
+    class Wrapper3 extends uvm_component;
+        `uvm_component_utils(Wrapper3)
+
+        Consumer cons;
+
+        uvm_analysis_export#(Transaction) p_export;
+
+        function new(string name, uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            cons = Consumer::type_id::create("cons", this);
+            p_export = new("p_export", this);
+        endfunction
+
+        virtual function void connect_phase(uvm_phase phase);
+            p_export.connect(cons.p_imp_0);
+            p_export.connect(cons.p_imp_1);
+            p_export.connect(cons.p_imp_2);
+        endfunction
+
+    endclass
+
+    class Wrapper1 extends uvm_test;
+        `uvm_component_utils(Wrapper1)
+
+        Wrapper2 wr2;
+        Wrapper3 wr3;
+
+        function new(string name, uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            wr2 = Wrapper2::type_id::create("wr2", this);
+            wr3 = Wrapper3::type_id::create("wr3", this);
+        endfunction
+
+        virtual function void connect_phase(uvm_phase phase);
+            wr2.p_export.connect(wr3.p_export);
+        endfunction
+
+    endclass
+```
+
+_В данном примере в классе `Consumer` реализованы три Analysis имплементации при помощи `uvm_analysis_imp_decl` (подробнее про `uvm_*_imp_decl` написано в [разделе 8.5](#85-множественная-реализация-tlm-api-в-рамках-одного-uvm-объекта-uvmimpdecl))._
+
+_В классе `Producer` 5 раз вызывается `UVM-TLM` метод `write()` для передачи транзакции типа `Transaction`. По иерархии объект класса `Consumer` соединяется с объектом класса `Producer`. При вызове метода `write()` в объекте класса `Consumer`, транзакция, отправленная по иерархии, попадает в каждую из имплементаций (`p_imp_0`, `p_imp_1` и `p_imp_2`)._
+
+_Стоит заметить, что попадает не транзакция, а указатель на нее, одинаковый для всех имплементаций. Поэтому в каждой из реализаций (`write_0()`, `write_1()` и `write_2()` для `p_imp_0`, `p_imp_1` и `p_imp_2` соответственно) транзакция копируется и выводится ее создержимое через метод `convert2string()`._
+
+
+### 10. Дополнительные примеры
+
+---
+## Лабораторная работа
+
 
 
 ## Список ссылок
