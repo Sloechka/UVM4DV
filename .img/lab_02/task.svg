@@ -26,9 +26,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="2.9027182"
-     inkscape:cx="1217.4795"
-     inkscape:cy="1013.705"
+     inkscape:zoom="0.72567955"
+     inkscape:cx="374.82109"
+     inkscape:cy="1366.3056"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
      inkscape:window-x="1912"
@@ -692,7 +692,7 @@
          x="34.393555"
          y="385.55536"><tspan
    style="font-weight:bold"
-   id="tspan150323">nbp</tspan> - non_blocking_put</tspan></text>
+   id="tspan150323">nbp </tspan>- non_blocking_put</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.58611px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -1658,28 +1658,28 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="34.188797"
-       y="393.89996"
+       x="34.371094"
+       y="403.10614"
        id="text6590-7-7-9-0-0"><tspan
          sodipodi:role="line"
          id="tspan6588-6-9-9-2-2"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:sans-serif, consolas;-inkscape-font-specification:'sans-serif, consolas';stroke-width:0.264583"
-         x="34.188797"
-         y="393.89996"><tspan
+         x="34.371094"
+         y="403.10614"><tspan
    style="font-weight:bold"
-   id="tspan151057">a</tspan>   - analysis</tspan></text>
+   id="tspan151057">a </tspan>- analysis</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:7.05556px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="34.214432"
-       y="402.40784"
+       x="34.487881"
+       y="394.29547"
        id="text6590-7-7-9-0-7"><tspan
          sodipodi:role="line"
          id="tspan6588-6-9-9-2-0"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:sans-serif, consolas;-inkscape-font-specification:'sans-serif, consolas';stroke-width:0.264583"
-         x="34.214432"
-         y="402.40784"><tspan
+         x="34.487881"
+         y="394.29547"><tspan
    style="font-weight:bold"
-   id="tspan151503">bg</tspan>  - blocking_get</tspan></text>
+   id="tspan151503">bg</tspan> - blocking_get</tspan></text>
   </g>
 </svg>
