@@ -38,7 +38,7 @@
 
 ## Цель
 
-Разбор основных концепций [Transaction-based verification (TBV)](https://github.com/MPSU/SV4DV/tree/master/lab_03%20SystemVerilog%20OOP#transaction-based-verification-tbv), реализуемых библиотеками UVM.
+Разбор основных концепций [Transaction-based verification (TBV)](https://github.com/MPSU/SV4DV/tree/master/lab_03%20SystemVerilog%20OOP#transaction-based-verification-tbv), реализуемых библиотеками UVM. Детальный разбор [UVM Transaction Level Modeling (TLM)](#3-uvm-transaction-level-modeling-tlm).
 
 ## Ход работы
 
@@ -66,18 +66,20 @@ _Так выделяется разбор примеров._
 
 В курсе [SV4DV от НИУ МИЭТ](https://github.com/MPSU/SV4DV/tree/master) уже была разобрана такая концепция, как [Transaction-based verification (TBV)](https://github.com/MPSU/SV4DV/tree/master/lab_03%20SystemVerilog%20OOP#transaction-based-verification-tbv), которая реализуется в языке описания и верификации аппаратуры SystemVerilog при помощи объектно-ориентированного программирования (`OOP`).
 
-<img align="center" width="800" height="280" src="../.img/lab_02/TBV.png">
+<img align="center" width="600" height="230" src="../.img/lab_02/TBV.png">
 
 |В универсальной методологии верификации (`UVM`) `OOP` и `TBV` являются теми основами, на которых и основывается методология.|
 |:---|
 
 По сути своей UVM стандартизует [архитектуру верификационного ООП-окружения](https://github.com/MPSU/SV4DV/tree/master/lab_03%20SystemVerilog%20OOP#12-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%BD%D0%B0%D1%8F-%D1%81%D1%85%D0%B5%D0%BC%D0%B0-%D0%B2%D0%B5%D1%80%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE-%D0%BE%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F-%D1%81-%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%D0%BC-%D0%BE%D0%BE%D0%BF), а также методы конфигурации и взаимодействия его компонентов.
 
-<img align="center" width="800" height="645" src="../.img/lab_02/env1.png">
+<img align="center" width="600" height="475" src="../.img/lab_02/env1.png">
 
 ### TBV в UVM
 
-В предыдущей лабораторной работе были разобраны основные концепции ООП, которые используются в UVM, иерархией, созданием UVM-объектов. Данная лабораторная работа посвящена разбору концепций TBV, то есть методам взаимодействия объектов верификационного окружения, которые реализованы в библиотеках UVM и уже долгое время применяются верификаторами по всему миру.
+В предыдущей лабораторной работе были разобраны **основные концепции ООП, которые используются в UVM**, иерархией, созданием UVM-объектов.
+
+Данная лабораторная работа посвящена разбору концепций TBV, то есть **методам взаимодействия объектов верификационного окружения, которые реализованы в библиотеках UVM при помощи [Transaction Level Modeling (TLM)](#3-uvm-transaction-level-modeling-tlm)**, и уже долгое время применяются верификаторами по всему миру.
 
 
 ## Теория
@@ -87,7 +89,7 @@ _Так выделяется разбор примеров._
 |В SystemVerilog классы, так же, как и модули, можно параметризовывать.|
 |:---|
 
-_Пример (`.examples/lab_02/class_param_0.sv`)._._
+_Пример (`.examples/lab_02/class_param_0.sv`)._
 
 ```systemverilog
 module class_param_0;
@@ -130,7 +132,7 @@ _Результат выполнения:_
 # my_data = 5
 ```
 
-Очень важно отметить, что параметр обладает `статической природой`. С точки зрения классов статическая природа проявлется в том, что **смена параметра меняет тип**. То есть, `my_param_class #(5)` и `my_param_class #(6)` являются **различными типами**. Сколько раз бы пользователь не создавал объект класса `my_param_class #(5)`, значение переменной `my_data` всегда будет равно `5` для любого объекта, потому что это свойства типа, а не объекта.
+Очень важно отметить, что параметр обладает **статической природой**. С точки зрения классов статическая природа проявлется в том, что **смена параметра меняет тип**. То есть, `my_param_class #(5)` и `my_param_class #(6)` являются **различными типами**. Сколько раз бы пользователь не создавал объект класса `my_param_class #(5)`, значение переменной `my_data` всегда будет равно `5` для любого объекта, потому что это свойства типа, а не объекта.
 
 ### 2. SystemVerilog параметризация классов типами
 
@@ -231,7 +233,7 @@ _Результат выполнения:_
 
 ### 5. UVM TLM 1.0 и TLM 2.0
 
-`TLM` подразделяется на **`TLM 1.0` и `TLM 2.0`**. Хоть `TLM 2.0` и предоставляет более широкий набор функционала, большинство верификационных окружений (исходя из опыта автора) используют лишь функционал `TLM 1.0`. **Данная лабораторная работа ограничивается знакомством только с `TLM 1.0`**.
+`TLM` подразделяется на **`TLM 1.0` и `TLM 2.0`**. Хоть `TLM 2.0` и предоставляет более широкий набор функционала, большинство верификационных окружений (исходя из опыта автора) используют лишь функционал `TLM 1.0`. **Данная лабораторная работа ограничивается знакомством только с [TLM 1.0](#6-обзор-uvm-tlm-10)**.
 
 ### 6. Обзор UVM TLM 1.0
 
@@ -461,11 +463,11 @@ _Пример похож на пример из [раздела 6.1.](#61-tlm-п
 
 ### 7. Взаимосвязь TLM-портов и TLM-API
 
-В данном разделе представлен подробный разбор TLM-портов и `TLM-API`, а также разобраны основные аспекты из взаимосвязи.
+В данном разделе представлен подробный разбор TLM-портов и `TLM-API`, а также основные аспекты из взаимосвязи.
 
 #### 7.1. Реализация TLM-портов
 
-В `UVM` основными файлами для определения TLM-портов служат:  `uvm_ports.svh`, `uvm_exports.svh` и `uvm_imps.svh`. 
+В `UVM` основными **файлами для определения TLM-портов служат:  `uvm_ports.svh`, `uvm_exports.svh` и `uvm_imps.svh`**. 
 
 Файлы определяют соответвенно `port`, `export` и `imp`.
 
@@ -621,7 +623,7 @@ endclass
 
 #### 7.3. Реализация `TLM-API` в TLM-портах
 
-Теперь, когда были подробно разобраны [TLM-порты](#71-tlm-порты) и [`TLM-API`](#72-tlm-api), стоит рассмотреть принцип построения TLM-портов.
+Теперь, когда были подробно разобраны [TLM-порты](#71-реализация-tlm-портов) и [`TLM-API`](#72-реализация-tlm-api), стоит рассмотреть принцип построения TLM-портов.
 
 На рисунке ниже представлена иерархии для `uvm_*_port` представлена полностью (за исключением крайне редко используемых классов). Также на рисунке показано, какую часть `TLM-API` реализует каждый из классов.
 
@@ -630,46 +632,46 @@ endclass
 _В качестве примера рассмотрим реализацию `uvm_put_port`. Данный класс в файле `uvm_ports.svh` реализуется следующим образом:_
 
 ```systemverilog
-    ...
+...
 
-    class uvm_put_port #(type T=int)
-        extends uvm_port_base #(uvm_tlm_if_base #(T,T));
-        `UVM_PORT_COMMON(`UVM_TLM_PUT_MASK,"uvm_put_port")
-        `UVM_PUT_IMP (this.m_if, T, t)
-    endclass
+class uvm_put_port #(type T=int)
+    extends uvm_port_base #(uvm_tlm_if_base #(T,T));
+    `UVM_PORT_COMMON(`UVM_TLM_PUT_MASK,"uvm_put_port")
+    `UVM_PUT_IMP (this.m_if, T, t)
+endclass
 
-    ...
+...
 ```
 
 _Если раскрыть defines:_
 
 ```systemverilog
-    ...
+...
 
-    class uvm_put_port #(type T=int)
-        extends uvm_port_base #(uvm_tlm_if_base #(T,T));
+class uvm_put_port #(type T=int)
+    extends uvm_port_base #(uvm_tlm_if_base #(T,T));
         
-        function new (string name, uvm_component parent,
-                int min_size=1, int max_size=1);
-            super.new ("uvm_put_port", parent, UVM_PORT, min_size, max_size);
-            m_if_mask = `UVM_TLM_PUT_MASK;
-        endfunction
+    function new (string name, uvm_component parent,
+            int min_size=1, int max_size=1);
+        super.new ("uvm_put_port", parent, UVM_PORT, min_size, max_size);
+        m_if_mask = `UVM_TLM_PUT_MASK;
+    endfunction
 
-        task put (T t);
-            this.m_if.put(t);
-        endtask
+    task put (T t);
+        this.m_if.put(t);
+    endtask
 
-        function bit try_put (T t);
-            return this.m_if.try_put(t);
-        endfunction
+    function bit try_put (T t);
+        return this.m_if.try_put(t);
+    endfunction
 
-        function bit can_put();
-          return this.m_if.can_put();
-        endfunction
+    function bit can_put();
+      return this.m_if.can_put();
+    endfunction
     
-    endclass
+endclass
 
-    ...
+...
 ```
 
 <div style="text-align: justify">
@@ -681,24 +683,24 @@ _Класс `uvm_blocking_put_port` будет отличаться от `uvm_pu
 </div>
 
 ```systemverilog
-    ...
+...
 
-    class uvm_blocking_put_port #(type T=int)
-        extends uvm_port_base #(uvm_tlm_if_base #(T,T));
+class uvm_blocking_put_port #(type T=int)
+    extends uvm_port_base #(uvm_tlm_if_base #(T,T));
         
-        function new (string name, uvm_component parent,
-                int min_size=1, int max_size=1);
-            super.new ("uvm_blocking_put_port", parent, UVM_PORT, min_size, max_size);
-            m_if_mask = `UVM_TLM_PUT_MASK;
-        endfunction
+    function new (string name, uvm_component parent,
+            int min_size=1, int max_size=1);
+        super.new ("uvm_blocking_put_port", parent, UVM_PORT, min_size, max_size);
+        m_if_mask = `UVM_TLM_PUT_MASK;
+    endfunction
 
-        task put (T t);
-            this.m_if.put(t);
-        endtask
+    task put (T t);
+        this.m_if.put(t);
+    endtask
     
-    endclass
+endclass
 
-    ...
+...
 ```
 
 Таким образом:
@@ -717,33 +719,33 @@ _Класс `uvm_blocking_put_port` будет отличаться от `uvm_pu
 _Пример соединения._
 
 ```systemverilog
-    class Producer extends uvm_component;
-        `uvm_component_utils(Producer)
+class Producer extends uvm_component;
+    `uvm_component_utils(Producer)
 
-        // Internal put port
-        uvm_blocking_put_port#(int) p_port;
+    // Internal put port
+    uvm_blocking_put_port#(int) p_port;
 
-        ...
+    ...
 
-    endclass
+endclass
 
 
-    class Wrapper2 extends uvm_component;
-        `uvm_component_utils(Wrapper2)
+class Wrapper2 extends uvm_component;
+    `uvm_component_utils(Wrapper2)
 
-        // Internal 'Producer' type component
-        Producer prod;
+    // Internal 'Producer' type component
+    Producer prod;
 
-        // Internal put export
-        uvm_blocking_put_export#(int) p_export;
+    // Internal put export
+    uvm_blocking_put_export#(int) p_export;
 
-        ...
+    ...
 
-        virtual function void connect_phase(uvm_phase phase);
-            prod.p_port.connect(p_export);
-        endfunction
+    virtual function void connect_phase(uvm_phase phase);
+        prod.p_port.connect(p_export);
+    endfunction
 
-    endclass
+endclass
 ```
 
 <div style="text-align: justify">
@@ -768,7 +770,7 @@ _Оба TLM-порта параметризованы типом `int`. В ме�
 
 #### 8.3. Объявление и создание TLM-портов, их принадлежность
 
-|Если TLM-порт подключен к какому-либо UVM-объекту, то он объявляется внутри него.|
+|TLM-порт является частью определения класса и объявляется внутри тела этого класса.|
 |:---|
 
 |При объявлении `port` и `export` параметризуются типом транзакции, которую передают, а `imp` типом транзакции, которую передают, и типом класса, который будет предоставлять реализацию `TLM-API`. Более подробно про реализацию `TLM-API` написано [разделе 8.4](#84-реализация-tlm-api-при-подключении-имплементации-imp).|
@@ -796,20 +798,20 @@ uvm_blocking_put_imp#(int, Consumer) p_imp;
 _Пример для `port`._
 
 ```systemverilog
-    class Producer extends uvm_component;
-        `uvm_component_utils(Producer)
+class Producer extends uvm_component;
+    `uvm_component_utils(Producer)
 
-        // Put port with 'int' transaction type
-        uvm_blocking_put_port#(int) p_port;
+    // Put port with 'int' transaction type
+    uvm_blocking_put_port#(int) p_port;
 
-        ...
+    ...
 
-            // Create put imp
-            p_port = new("p_port", this);
+        // Create put imp
+        p_port = new("p_port", this);
 
-        ...
+    ...
 
-    endclass
+endclass
 ```
 
 <img width="800" src="../.img/lab_02/port_export_new_2.svg">
@@ -820,21 +822,21 @@ _В данном примере `uvm_blocking_put_port` подключен к о
 _Пример для `imp`._
 
 ```systemverilog
-    class Consumer extends uvm_component;
-        `uvm_component_utils(Consumer)
+class Consumer extends uvm_component;
+    `uvm_component_utils(Consumer)
 
-        // Put implemetation with 'int' type and
-        // Consumer as implementation class
-        uvm_blocking_put_imp#(int, Consumer) p_imp;
+    // Put implemetation with 'int' type and
+    // Consumer as implementation class
+    uvm_blocking_put_imp#(int, Consumer) p_imp;
 
-        ...
+    ...
 
-            // Create put imp
-            p_imp = new("p_imp", this);
+        // Create put imp
+        p_imp = new("p_imp", this);
 
-        ...
+    ...
 
-    endclass
+endclass
 ```
 
 <img width="800" src="../.img/lab_02/port_export_new_7.svg">
@@ -843,7 +845,8 @@ _В данном примере `uvm_blocking_put_imp` подключена к �
 
 #### 8.4. Реализация `TLM-API` при подключении имплементации (`imp`)
 
-**При передвижении транзакции по иерархии конечной ее точкой всегда оказывается имплементация (`imp`).** К ней уже больше не подключается никакой TLM-порт.
+|При передвижении транзакции по иерархии конечной ее точкой всегда оказывается имплементация (`imp`). К ней уже больше не подключается никакой TLM-порт.|
+|:---|
 
 Если в написанном вами коде встречается
 
@@ -854,7 +857,7 @@ _В данном примере `uvm_blocking_put_imp` подключена к �
 то вы явно делаете что-то не так.
 
 
-|Имплементация, в отличие от `port` и `export` не вызывает метод `TLM-API` следующего за ней TLM-порта. **Имплементация вызывает метод объекта класса, который предоставляет реализацию имплементации (то есть того класса, в котором определен метод, который будет вызывать имплементация).**|
+|Имплементация, в отличие от `port` и `export` не вызывает метод(ы) `TLM-API` следующего(их) за ней TLM-порта(ов). **Имплементация вызывает метод объекта класса, который предоставляет реализацию имплементации (то есть того класса, в котором определен метод, который будет вызывать имплементация).**|
 |:---|
 
 Если обратиться к файлу `uvm_imps.svh`:
@@ -956,27 +959,27 @@ endclass
 _Пример._
 
 ```systemverilog
-    class Consumer extends uvm_component;
-        `uvm_component_utils(Consumer)
+class Consumer extends uvm_component;
+    `uvm_component_utils(Consumer)
 
-        uvm_blocking_put_imp#(int, Consumer) p_imp;
+    uvm_blocking_put_imp#(int, Consumer) p_imp;
 
-        ...
+    ...
 
-        virtual function void build_phase(uvm_phase phase);
-            p_imp = new("p_imp", this);
-        endfunction
+    virtual function void build_phase(uvm_phase phase);
+        p_imp = new("p_imp", this);
+    endfunction
 
-        // This class has 'uvm_blocking_put_imp' with
-        // 'Consumer' implementation provider type and
-        // 'this' pointer in implementation 'new()'
-        // method. So it must implement 'put' task
-        virtual task put(int t);
-            `uvm_info(get_name(),
-                $sformatf("Got %0d", t), UVM_LOW);
-        endtask
+    // This class has 'uvm_blocking_put_imp' with
+    // 'Consumer' implementation provider type and
+    // 'this' pointer in implementation 'new()'
+    // method. So it must implement 'put' task
+    virtual task put(int t);
+        `uvm_info(get_name(),
+            $sformatf("Got %0d", t), UVM_LOW);
+    endtask
 
-    endclass
+endclass
 ```
 
 _В данном примере в классе `Consumer` определяется имплементация `uvm_blocking_put_imp`, параметризованная типом транзакции `int` и типом реализующего имплементацию класса `Consumer`. Класс `Consumer` обязан теперь поддерживать реализацию `TLM-API` для `uvm_blocking_put_imp`, то есть задачу `put()` (см. иерархию в [разделе 7.3](#73-реализация-tlm-api-в-tlm-портах)). В качестве указателя на объект, который реализует имплементацию, передается `this`, то есть указатель на текущий класс._
@@ -1039,7 +1042,7 @@ _В данном примере реализация имплементации 
 
 #### 8.5. Множественная реализация `TLM-API` в рамках одного UVM-объекта (`uvm_*_imp_decl`)
 
-|В рамках одного UVM-объекта реализации имплементации можно реализовывать несколько реализаций. Для этого используется макрос `uvm_*_imp_decl`.|
+|В рамках одного UVM-объекта можно предоставлять несколько реализаций имплементации одного типа. Для этого используется макрос `uvm_*_imp_decl`.|
 |:---|
 
 ```systemverilog
@@ -1166,32 +1169,32 @@ _Рассмотрим уже известный пример._
 _Соединение для `Wrapper2`:_
 
 ```systemverilog
-    class Wrapper2 extends uvm_component;
-        `uvm_component_utils(Wrapper2)
+class Wrapper2 extends uvm_component;
+    `uvm_component_utils(Wrapper2)
 
-        // Producer is inside Wrapper2
-        Producer prod;
+    // Producer is inside Wrapper2
+    Producer prod;
 
-        // Put export in Wrapper2
-        uvm_blocking_put_export#(int) p_export;
+    // Put export in Wrapper2
+    uvm_blocking_put_export#(int) p_export;
 
-        ...
+    ...
 
-            // Create producer (port inside producer will
-            // be created as well)
-            prod = Producer::type_id::create("prod", this);
-            // Create put imp in this class
-            p_export = new("p_export", this);
+        // Create producer (port inside producer will
+        // be created as well)
+        prod = Producer::type_id::create("prod", this);
+        // Create put imp in this class
+        p_export = new("p_export", this);
 
-        ...
+    ...
 
-            // Connect port in Producer to export in Wrapper2
-            // via connect() method
-            prod.p_port.connect(p_export);
+        // Connect port in Producer to export in Wrapper2
+        // via connect() method
+        prod.p_port.connect(p_export);
 
-        ...
+    ...
 
-    endclass
+endclass
 ```
 
 _Заметим, что соединение производится в форме `prod.p_port.connect(p_export)`, где, очевидно, отдающим является `port` класса `Producer`, а берущим на данном уровне иерархии является `p_export` класса `Wrapper2`._
