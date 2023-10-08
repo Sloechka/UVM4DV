@@ -46,7 +46,7 @@ module lab_02_template;
         `uvm_component_utils(Producer1)
 
         // Define analysis port
-        // uvm_analysis_port#(Transaction) <port-name>
+        uvm_analysis_port#(Transaction) a_port;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -54,7 +54,7 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create port
-            // <port-name> = new(...)
+            a_port = new("a_port", this);
         endfunction
 
         virtual task run_phase(uvm_phase phase);
@@ -63,7 +63,7 @@ module lab_02_template;
                 t = new("tr");
                 void'(t.randomize());
                 // Use write TLM-API function in port
-                // <port-name>.write(...);
+                a_port.write(t);
             end
         endtask
 
@@ -81,7 +81,7 @@ module lab_02_template;
         `uvm_component_utils(Producer2)
 
         // Define nonblocking put port
-        // uvm_nonblocking_put_port#(Transaction) <port-name>
+        uvm_nonblocking_put_port#(Transaction) nbp_port;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -89,7 +89,7 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create port
-            // <port-name> = new(...)
+            nbp_port = new("nbp_port", this);
         endfunction
 
         virtual task run_phase(uvm_phase phase);
@@ -97,11 +97,11 @@ module lab_02_template;
             repeat(5) begin
                 // Use TLM-API can_put() to wait
                 // for possibility to put
-                // wait(<port-name>.can_put());
+                wait(nbp_port.can_put());
                 t = new("tr");
                 void'(t.randomize());
                 // Use write TLM-API function in port
-                // <port-name>.try_put(...);
+                nbp_port.try_put(t);
             end
         endtask
 
@@ -119,7 +119,7 @@ module lab_02_template;
         `uvm_component_utils(Producer3)
 
         // Define blocking get imp
-        // uvm_nonblocking_put_port#(Transaction, <imp-provider>) <imp-name>
+        uvm_blocking_get_imp#(Transaction, Producer3) bg_imp;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -127,13 +127,14 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create port
-            // <imp-name> = new(...)
+            bg_imp = new("bg_imp", this);
         endfunction
 
         // Implement TLM-API get()
-        // virtual task get(output Transaction t);
-        //     <do-some-creation>
-        // endtask
+        virtual task get(output Transaction t);
+            t = new("tr");
+            void'(t.randomize());
+        endtask
 
     endclass
 
@@ -148,9 +149,15 @@ module lab_02_template;
     // Create Producer4 class
     // It can be extended from Producer1
 
-    // class Producer4 extends Producer1;
-    //     <some-uvm-routines>
-    // endclass
+    class Producer4 extends Producer1;
+        `uvm_component_utils(Producer4)
+
+        function new(string name = "", uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+    endclass
+
 
 
 
@@ -160,12 +167,17 @@ module lab_02_template;
     // |___________|
     // 
 
-    // Create Producer4 class
+    // Create Producer5 class
     // It can be extended from Producer3
 
-    // class Producer5 extends Producer3;
-    //     <some-uvm-routines>
-    // endclass
+    class Producer5 extends Producer3;
+        `uvm_component_utils(Producer5)
+
+        function new(string name = "", uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+    endclass
 
 
 
@@ -182,10 +194,10 @@ module lab_02_template;
         `uvm_component_utils(Wrapper1)
 
         // Define Producer1
-        // Producer1 <prod-name>;
+        Producer1 prod;
 
         // Define analysis port
-        // uvm_analysis_port#(Transaction) <port-name>;
+        uvm_analysis_port#(Transaction) a_port;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -193,13 +205,13 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create Producer and port
-            // ::type_id::create(...)
-            // new(...)
+            prod = Producer1::type_id::create("prod", this);
+            a_port = new("a_port", this);
         endfunction
 
         virtual function void connect_phase(uvm_phase phase);
             // Connect Producer's port with this class port
-            // <prod-name>.<port-name>.connect(<port-name>);
+            prod.a_port.connect(a_port);
         endfunction
 
     endclass
@@ -219,10 +231,10 @@ module lab_02_template;
         `uvm_component_utils(Wrapper3)
 
         // Define Producer2
-        // Producer2 <prod-name>;
+        Producer2 prod;
 
         // Define nonblocking put export
-        // uvm_nonblocking_put_export#(Transaction) <export-name>;
+        uvm_nonblocking_put_export#(Transaction) nbp_export;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -230,13 +242,13 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create Producer and export
-            // ::type_id::create(...)
-            // new(...)
+            prod = Producer2::type_id::create("prod", this);
+            nbp_export = new("nbp_export", this);
         endfunction
 
         virtual function void connect_phase(uvm_phase phase);
             // Connect Producer's port with this class export
-            // <prod-name>.<port-name>.connect(<export-name>);
+            prod.nbp_port.connect(nbp_export);
         endfunction
 
     endclass
@@ -256,10 +268,10 @@ module lab_02_template;
         `uvm_component_utils(Wrapper4)
 
         // Define Producer3
-        // Producer3 <prod-name>;
+        Producer3 prod;
 
         // Define blocking get export
-        // uvm_blocking_get_export#(Transaction) <export-name>;
+        uvm_blocking_get_export#(Transaction) bg_export;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -267,13 +279,13 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create Producer and export
-            // ::type_id::create(...)
-            // new(...)
+            prod = Producer3::type_id::create("prod", this);
+            bg_export = new("bg_export", this);
         endfunction
 
         virtual function void connect_phase(uvm_phase phase);
             // Connect Producer's imp with this class export
-            // <export-name>.connect(<prod-name>.<imp-name>);
+            bg_export.connect(prod.bg_imp);
         endfunction
 
     endclass
@@ -291,16 +303,29 @@ module lab_02_template;
 
     // This class is like Wrapper4
 
-    // class Wrapper5 extends uvm_component;
-    //     `uvm_component_utils(Wrapper5)
+    class Wrapper5 extends uvm_component;
+        `uvm_component_utils(Wrapper5)
 
-    //     Producer5 prod5;
+        Producer5 prod;
 
-    //     uvm_blocking_get_export#(Transaction) bg_export;
+        uvm_blocking_get_export#(Transaction) bg_export;
 
-    //     <creation-and-connection>
+        function new(string name = "", uvm_component parent);
+            super.new(name, parent);
+        endfunction
 
-    // endclass
+        virtual function void build_phase(uvm_phase phase);
+            // Create Producer and export
+            prod = Producer5::type_id::create("prod", this);
+            bg_export = new("bg_export", this);
+        endfunction
+
+        virtual function void connect_phase(uvm_phase phase);
+            // Connect Producer's imp with this class export
+            bg_export.connect(prod.bg_imp);
+        endfunction
+
+    endclass
 
 
 
@@ -320,10 +345,10 @@ module lab_02_template;
         `uvm_component_utils(Wrapper6)
 
         // Define Wrapper5
-        // Wrapper5 <wrap-name>;
+        Wrapper5 wrap;
 
         // Define blocking get export
-        // uvm_blocking_get_export#(Transaction) <export-name>;
+        uvm_blocking_get_export#(Transaction) bg_export;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -331,11 +356,13 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create wrapper and export
+            wrap = Wrapper5::type_id::create("wrap", this);
+            bg_export = new("bg_export", this);
         endfunction
 
         virtual function void connect_phase(uvm_phase phase);
             // Connect exports
-            // <export-name>.connect(<wrap-name>.<export-name>);
+            bg_export.connect(wrap.bg_export);
         endfunction
 
     endclass
@@ -354,18 +381,15 @@ module lab_02_template;
 
     // Declare two implementations:
 
-    // uvm_analysis_imp_1
-    // uvm_analysis_imp_2
-
-    // `uvm_analysis_imp_decl(...)
-    // `uvm_analysis_imp_decl(...)
+    `uvm_analysis_imp_decl(_1)
+    `uvm_analysis_imp_decl(_2)
 
     class Consumer1 extends uvm_component;
         `uvm_component_utils(Consumer1)
 
         // Define implementations
-        // ... <imp1-name>;
-        // ... <imp2-name>;
+        uvm_analysis_imp_1#(Transaction, Consumer1) a_imp_1;
+        uvm_analysis_imp_2#(Transaction, Consumer1) a_imp_2;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -373,19 +397,20 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create implementations
-            // new(...)
+            a_imp_1 = new("a_imp_1", this);
+            a_imp_2 = new("a_imp_2", this);
         endfunction
         
         // Implement TLM-API write_1() and write2() methods
         // as you wish (some prints and etc.)
 
-        // virtual function void write_1(Transaction t);
-        //     ...
-        // endfunction
+        virtual function void write_1(Transaction t);
+            `uvm_info(get_name(), $sformatf("[1] GOT %s", t.convert2string()), UVM_NONE);
+        endfunction
 
-        // virtual function void write_2(Transaction t);
-        //     ...
-        // endfunction
+        virtual function void write_2(Transaction t);
+            `uvm_info(get_name(), $sformatf("[2] GOT %s", t.convert2string()), UVM_NONE);
+        endfunction
 
     endclass
 
@@ -409,10 +434,10 @@ module lab_02_template;
         `uvm_component_utils(Wrapper2)
 
         // Define Consumer1
-        // Consumer1 <cons-name>;
+        Consumer1 cons;
 
         // Define analysis export
-        // uvm_analysis_export#(Transaction) <export-name>;
+        uvm_analysis_export#(Transaction) a_export;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -420,11 +445,14 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create neccessary fields
+            cons = Consumer1::type_id::create("cons", this);
+            a_export = new("a_export", this);
         endfunction
 
         virtual function void connect_phase(uvm_phase phase);
             // Connect export to 2 implementations in Consumer via
-            // <export-name>.connect(...)
+            a_export.connect(cons.a_imp_1);
+            a_export.connect(cons.a_imp_2);
         endfunction
 
     endclass
@@ -443,7 +471,7 @@ module lab_02_template;
         `uvm_component_utils(Consumer3)
 
         // Define clocking put port
-        // uvm_blocking_get_port#(Transaction) <port-name>;
+        uvm_blocking_get_port#(Transaction) bg_port;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -451,13 +479,16 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create port
+            bg_port = new("bg_port", this);
         endfunction
 
         virtual task run_phase(uvm_phase phase);
             Transaction t;
-            t = new();
+            t = new("tr");
             // Implement getting transactions from
             // the consumer via <port-name>.get(...)
+            bg_port.get(t);
+            `uvm_info(get_name(), t.convert2string(), UVM_NONE);
         endtask
 
     endclass
@@ -518,18 +549,19 @@ module lab_02_template;
         `uvm_component_utils(Wrapper7)
 
         // Define all neccessary components
-        // Wrapper1 wrap1;
-        // Wrapper2 wrap2;
-        // ...
-        // Wrapper6 wrap6;
+        Wrapper1 wrap1;
+        Wrapper2 wrap2;
+        Wrapper3 wrap3;
+        Wrapper4 wrap4;
+        Wrapper6 wrap6;
 
-        // Producer4 ...;
-        // Consumer3 cons3;
+        Producer4 prod4;
+        Consumer3 cons3;
 
         // Define neccessary ports and exports
-        // uvm_blocking_get_export#(Transaction) ...;
-        // uvm_analysis_port#(Transaction) ...;
-        // uvm_nonblocking_put_export#(Transaction) ...;
+        uvm_blocking_get_export#(Transaction) bg_export;
+        uvm_analysis_port#(Transaction) a_port;
+        uvm_nonblocking_put_export#(Transaction) nbp_export;
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -537,19 +569,29 @@ module lab_02_template;
 
         virtual function void build_phase(uvm_phase phase);
             // Create components
-            // wrap1 = Wrapper1::type_id::create("wrap1",  this);
-            // ...
-            // cons3 = Consumer3::type_id::create("cons3", this);
+            wrap1 = Wrapper1::type_id::create("wrap1",  this);
+            wrap2 = Wrapper2::type_id::create("wrap2",  this);
+            wrap3 = Wrapper3::type_id::create("wrap3",  this);
+            wrap4 = Wrapper4::type_id::create("wrap4",  this);
+            wrap6 = Wrapper6::type_id::create("wrap6",  this);
+
+            prod4 = Producer4::type_id::create("prod4", this);
+            cons3 = Consumer3::type_id::create("cons3", this);
+
             // Create exports
-            // ... = new("bg_export",  this);
-            // ... = new("a_port",     this);
-            // ... = new("nbp_export", this);
+            bg_export = new("bg_export",  this);
+            a_port = new("a_port",     this);
+            nbp_export = new("nbp_export", this);
         endfunction
 
         virtual function void connect_phase(uvm_phase phase);
             // Do all neccessary connections
-            // wrap1.<port-name>.connect(wrap2.<export-name>);
-            // ...
+            wrap1.a_port.connect(wrap2.a_export);
+            wrap3.nbp_export.connect(nbp_export);
+            cons3.bg_port.connect(wrap4.bg_export);
+            prod4.a_port.connect(a_port);
+            bg_export.connect(wrap6.bg_export);
+
         endfunction
 
     endclass
@@ -568,22 +610,28 @@ module lab_02_template;
 
     // Create Consumer2 class with nonblocking put implementation
 
-    // class Consumer2 extends uvm_component;
-    //     `uvm_component_utils(Consumer2)
-    //
-    //    uvm_nonblocking_put_imp#(Transaction, ...) ...;
-    //
-    //    ...
-    //
-    //    virtual function try_put(Transaction t);
-    //        ...
-    //    endfunction
-    //
-    //    virtual function bit can_put();
-    //        ...
-    //    endfunction
-    //
-    // endclass
+    class Consumer2 extends uvm_component;
+        `uvm_component_utils(Consumer2)
+    
+       uvm_nonblocking_put_imp#(Transaction, Consumer2) nbp_imp;
+    
+        function new(string name = "", uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            nbp_imp = new("nbp_imp", this);
+        endfunction
+    
+       virtual function try_put(Transaction t);
+            `uvm_info(get_name(), t.convert2string(), UVM_NONE);
+       endfunction
+    
+       virtual function bit can_put();
+           return 1; // ?
+       endfunction
+    
+    endclass
 
 
 
@@ -597,18 +645,24 @@ module lab_02_template;
 
     // Create Consumer4 class with analysis implementation
 
-    // class Consumer4 extends uvm_component;
-    //     `uvm_component_utils(Consumer4)
-    //
-    //     uvm_analysis_imp#(Transaction, ...) a_imp;
-    //
-    //     ...
-    //
-    //     virtual task write(Transaction t);
-    //          ...
-    //     endtask
-    //
-    // endclass
+    class Consumer4 extends uvm_component;
+        `uvm_component_utils(Consumer4)
+    
+        uvm_analysis_imp#(Transaction, Consumer4) a_imp;
+    
+        function new(string name = "", uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            a_imp = new("a_imp", this);
+        endfunction
+    
+        virtual task write(Transaction t);
+            `uvm_info(get_name(), t.convert2string(), UVM_NONE);
+        endtask
+    
+    endclass
 
 
 
@@ -624,15 +678,23 @@ module lab_02_template;
         `uvm_component_utils(Consumer5)
 
         // Create blocking get port
-        // uvm_blocking_get_port#(Transaction) <port-name>;
+        uvm_blocking_get_port#(Transaction) bg_port;
 
-        // new() and creation here
+        function new(string name = "", uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            bg_port = new("bg_port", this);
+        endfunction
 
         virtual task run_phase(uvm_phase phase);
             Transaction t;
             t = new();
             // Do some <port-name>.get(...) to
             // request transactions from consumer
+            bg_port.get(t);
+            `uvm_info(get_name(), t.convert2string(), UVM_NONE);
         endtask
 
     endclass
@@ -663,17 +725,27 @@ module lab_02_template;
     class Wrapper8 extends uvm_component;
         `uvm_component_utils(Wrapper8)
 
-        // Consumer4 <cons4-name>;
-        // Consumer5 <cons5-name>;
+        Consumer4 cons4;
+        Consumer5 cons5;
 
-        // uvm_analysis_export#(Transaction) <export-name>;
-        // uvm_blocking_get_port#(Transaction) <port-name>;
+        uvm_analysis_export#(Transaction) a_export;
+        uvm_blocking_get_port#(Transaction) bg_port;
 
-        // new() and creation here
+        function new(string name = "", uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            cons4 = Consumer4::type_id::create("cons4", this);
+            cons5 = Consumer5::type_id::create("cons5", this);
+
+            bg_port = new("bg_port", this);
+            a_export = new("a_export", this);
+        endfunction
 
         virtual function void connect_phase(uvm_phase phase);
-            // <export-name>.connect(<cons4-name>.<imp-name>);
-            // <cons5-name>.<port-name>.connect(<port-name>);
+            a_export.connect(cons4.a_imp);
+            cons5.bg_port.connect(bg_port);
         endfunction
 
     endclass
@@ -726,16 +798,30 @@ module lab_02_template;
         `uvm_component_utils(Wrapper9)
 
         // Wrapper and consumer
-        // ...
+        Wrapper8 wrap8;
+        Consumer2 cons2;
 
-        // uvm_nonblocking_put_export#(Transaction) <export1-name>;
-        // uvm_analysis_export#(Transaction) <export2-name>;
-        // uvm_blocking_get_port#(Transaction) <port-name>;
+        uvm_nonblocking_put_export#(Transaction) nbp_export;
+        uvm_analysis_export#(Transaction) a_export;
+        uvm_blocking_get_port#(Transaction) bg_port;
 
-        // new() and creation here
+        function new(string name = "", uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            wrap8 = Wrapper8::type_id::create("wrap8", this);
+            cons2 = Consumer2::type_id::create("cons2", this);
+
+            nbp_export = new("nbp_export", this);
+            a_export = new("a_export", this);
+            bg_port = new("bg_port", this);
+        endfunction
 
         virtual function void connect_phase(uvm_phase phase);
-            // Connect it yourself!
+            nbp_export.connect(cons2.nbp_imp);
+            a_export.connect(wrap8.a_export);
+            wrap8.bg_port.connect(bg_port);
         endfunction
 
     endclass
@@ -807,10 +893,19 @@ module lab_02_template;
         Wrapper7 wrap7;
         Wrapper9 wrap9;
 
-        // new() and creation here
+        function new(string name = "", uvm_component parent);
+            super.new(name, parent);
+        endfunction
+
+        virtual function void build_phase(uvm_phase phase);
+            wrap7 = Wrapper7::type_id::create("wrap7", this);
+            wrap9 = Wrapper9::type_id::create("wrap9", this);
+        endfunction        
 
         virtual function void connect_phase(uvm_phase phase);
-            // Do neccessary connections
+            wrap9.bg_port.connect(wrap7.bg_export);
+            wrap7.a_port.connect(wrap9.a_export);
+            wrap7.nbp_export.connect(wrap9.nbp_export);
         endfunction
 
         virtual function void end_of_elaboration_phase(uvm_phase phase);
