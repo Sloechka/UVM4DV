@@ -119,7 +119,7 @@ module lab_02_template;
         `uvm_component_utils(Producer3)
 
         // Define blocking get imp
-        // uvm_nonblocking_put_port#(Transaction, <imp-provider>) <imp-name>
+        // uvm_blocking_get_imp#(Transaction, <imp-provider>) <imp-name>
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
@@ -160,7 +160,7 @@ module lab_02_template;
     // |___________|
     // 
 
-    // Create Producer4 class
+    // Create Producer5 class
     // It can be extended from Producer3
 
     // class Producer5 extends Producer3;
@@ -353,9 +353,8 @@ module lab_02_template;
     //
 
     // Declare two implementations:
-
-    // uvm_analysis_imp_1
-    // uvm_analysis_imp_2
+    // - uvm_analysis_imp_1
+    // - uvm_analysis_imp_2
 
     // `uvm_analysis_imp_decl(...)
     // `uvm_analysis_imp_decl(...)
