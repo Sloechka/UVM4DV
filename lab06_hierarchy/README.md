@@ -658,7 +658,7 @@ class my_design_new_test extends my_design_test;
 
 Однако переопределения типа последовательности можно добиться и ниым методом. Через командную строку. К примеру, для повторения переопределения выше достаточно добавить при запуске: `+uvm_set_type_override=apb_seq,apb_new_seq`.
 
-_К примеру, для QuestaSim запуск должен выглядеть следующим образом:_
+_К примеру, для QuestaSim запуск будет выглядеть следующим образом:_
 
 ```bash
   vsim +UVM_TESTNAME=my_design_test +uvm_set_type_override=apb_seq,apb_new_seq
