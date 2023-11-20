@@ -407,7 +407,7 @@ class my_design_scoreboard extends uvm_scoreboard;
   endtask
 
   virtual function void check();
-    if( packet.size() != cfg.samples )
+    if( axis_packet.size() != cfg.samples )
       `uvm_fatal(get_name(), $sformatf(
         "Size of AXI Stream packet is not %0d", cfg.samples));
     // <проверки>
