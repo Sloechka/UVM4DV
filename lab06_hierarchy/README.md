@@ -317,8 +317,8 @@ class my_design_env extends uvm_env;
 
   // Соединение компонентов
   virtual function void connect_phase(uvm_phase phase);
-    apb_ag.monitor.connect(scb.apb_imp);
-    axis_ag.monitor.connect(scb.axis_imp);
+    apb_ag.monitor.ap.connect(scb.apb_imp);
+    axis_ag.monitor.ap.connect(scb.axis_imp);
   endfunction
 
 endclass
