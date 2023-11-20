@@ -81,8 +81,8 @@ module testbench;
 
   initial begin
     // Передача интерфейсов
-    uvm_resource_db#(virtual apb_intf)::set("*agnt", "apb_if", apb_if);
-    uvm_resource_db#(virtual axis_if)::set("*agnt", "axis_if", axis_if);
+    uvm_resource_db#(virtual apb_intf)::set("*_ag.*", "apb_if", apb_if);
+    uvm_resource_db#(virtual axis_if)::set("*_ag.*", "axis_if", axis_if);
     // Передача глобальных настроек
     uvm_resource_db#(string)::set("*", "global_message", "Hello world!");
     // Запуск теста
