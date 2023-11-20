@@ -629,21 +629,21 @@ end
 ```systemverilog
 uvm_component uvm_test_top;
 if (test_name != "") begin
-    uvm_coreservice_t cs = uvm_coreservice_t::get();
-    uvm_factory factory=cs.get_factory();
-    // ...
-    $cast(uvm_test_top, factory.create_component_by_name(test_name,
-      "", "uvm_test_top", null));
-    // ...
-  end
+  uvm_coreservice_t cs = uvm_coreservice_t::get();
+  uvm_factory factory=cs.get_factory();
+  // ...
+  $cast(uvm_test_top, factory.create_component_by_name(test_name,
+    "", "uvm_test_top", null));
+  // ...
+end
 ```
 
 То есть, если есть класс тестового сценария:
 
 ```systemverilog
-  class my_design_test extends uvm_test;
-    `uvm_component_utils(my_design_test)
-  endclass
+class my_design_test extends uvm_test;
+  `uvm_component_utils(my_design_test)
+endclass
 ```
 
 То тест может быть выбран из командной строки: `+UVM_TESTNAME=my_design_test`.
