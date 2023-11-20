@@ -262,6 +262,9 @@ class my_design_test extends uvm_test;
     axis_cfg.is_active = UVM_ACTIVE;
     uvm_resource_db#(agent_config)::set("env.axis_ag", "cfg", axis_cfg);
 
+    // Создание окружения
+    env = my_design_env::type_id::create("env", this);
+
   endfunction
 
   virtual task main_phase(uvm_phase phase);
