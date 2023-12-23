@@ -119,7 +119,7 @@ module lab_02_template;
         `uvm_component_utils(Producer3)
 
         // Define blocking get imp
-        uvm_blocking_get_imp#(Transaction, Producer3) bg_imp;
+        // uvm_blocking_get_imp#(Transaction, <imp-provider>) <imp-name>
 
         function new(string name = "", uvm_component parent);
             super.new(name, parent);
