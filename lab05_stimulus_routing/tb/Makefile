@@ -5,7 +5,7 @@ UVM_VERBOSITY := UVM_NONE
 LOG_FILENAME := simulation.log
 
 TEST_NAME := dummy_test
-TOP_LEVEL_NAME := lab4_tb
+TOP_LEVEL_NAME := lab5_tb
 
 TB_HOME := $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
 
