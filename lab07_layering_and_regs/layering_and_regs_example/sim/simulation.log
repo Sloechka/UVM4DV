@@ -1,0 +1,104 @@
+xrun(64): 19.03-s009: (c) Copyright 1995-2019 Cadence Design Systems, Inc.
+TOOL:	xrun(64)	19.03-s009: Started on Dec 25, 2023 at 04:21:14 MSK
+xrun
+	-64BIT
+	-sv
+	-uvm
+	-errormax 150
+	+access+rwc
+	-input simulate.tcl
+	-nowarn NONPRT
+	-incdir /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb
+	-incdir /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//dstream_uvc
+	-incdir /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//a_layer_uvc
+	-incdir /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//cam_ral
+	-svseed 1703467273
+	-logfile simulation.log
+	+UVM_VERBOSITY=UVM_NONE
+	+UVM_TESTNAME=lab_test_example
+	-top tb_top
+	/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//rtl/cam.sv
+	/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//dstream_uvc/dstream_pkg.sv
+	/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//a_layer_uvc/a_layer_pkg.sv
+	/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//cam_ral/cam_ral_pkg.sv
+	/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv
+	/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/tb_top.sv
+
+   User defined plus("+") options:
+	+UVM_VERBOSITY=UVM_NONE
+
+Compiling UVM packages (uvm_pkg.sv cdns_uvm_pkg.sv) using uvmhome location /tools/cadence/XCELIUM/1903/tools/methodology/UVM/CDNS-1.1d
+file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//rtl/cam.sv
+	module worklib.cam:sv
+		errors: 0, warnings: 0
+file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//dstream_uvc/dstream_pkg.sv
+	interface worklib.dstream_if:sv
+		errors: 0, warnings: 0
+	package worklib.dstream_pkg:sv
+		errors: 0, warnings: 0
+file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//a_layer_uvc/a_layer_pkg.sv
+        `uvm_do_on_with(d_seq, m_dstream_sequencer, { m_master_data == 32'h0; })
+                                                                               |
+xmvlog: *E,UNDIDN (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//a_layer_uvc/a_layer2dstream_driver.svh,41|79): 'start_item': undeclared identifier [12.5(IEEE)].
+        `uvm_do_on_with(d_seq, m_dstream_sequencer, { m_master_data == 32'h0; })
+                                                                               |
+xmvlog: *E,UNDIDN (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//a_layer_uvc/a_layer2dstream_driver.svh,41|79): 'finish_item': undeclared identifier [12.5(IEEE)].
+        `uvm_do_on_with(d_seq, m_dstream_sequencer, { m_master_data == 32'h0; })
+                                                                               |
+xmvlog: *E,UNDIDN (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//a_layer_uvc/a_layer2dstream_driver.svh,42|79): 'start_item': undeclared identifier [12.5(IEEE)].
+        `uvm_do_on_with(d_seq, m_dstream_sequencer, { m_master_data == 32'h0; })
+                                                                               |
+xmvlog: *E,UNDIDN (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//a_layer_uvc/a_layer2dstream_driver.svh,42|79): 'finish_item': undeclared identifier [12.5(IEEE)].
+	package worklib.a_layer_pkg:sv
+		errors: 4, warnings: 0
+file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//cam_ral/cam_ral_pkg.sv
+   a_layer_pkg::reg2a_layer_adapter m_reg2a_layer;       // Convert Reg Tx <-> Bus-type packets
+             |
+xmvlog: *E,SVNOTY (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//cam_ral/cam_reg_env.svh,12|13): Syntactically this identifier appears to begin a datatype but it does not refer to a visible datatype in the current scope.
+(`include file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//cam_ral/cam_reg_env.svh line 12, file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//cam_ral/cam_ral_pkg.sv line 14)
+	package worklib.cam_ral_pkg:sv
+		errors: 1, warnings: 0
+file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv
+    import a_layer_pkg::*;
+                     |
+xmvlog: *E,NOPBIND (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv,11|21): Package a_layer_pkg could not be bound.
+    import cam_ral_pkg::*;
+                     |
+xmvlog: *E,NOPBIND (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv,12|21): Package cam_ral_pkg could not be bound.
+(`include file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_env_config.svh line 5, file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv line 14)
+    a_layer_agent  m_a_layer_agent;
+                |
+xmvlog: *E,NOIPRT (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_env.svh,11|16): Unrecognized declaration 'a_layer_agent' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+(`include file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_env.svh line 11, file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv line 15)
+    cam_reg_env    m_reg_env;
+              |
+xmvlog: *E,NOIPRT (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_env.svh,12|14): Unrecognized declaration 'cam_reg_env' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+(`include file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_env.svh line 12, file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv line 15)
+    a_layer_sequencer m_a_layer_sequencer;
+                    |
+xmvlog: *E,NOIPRT (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_example.svh,11|20): Unrecognized declaration 'a_layer_sequencer' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+(`include file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_example.svh line 11, file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv line 16)
+    ral_sys_cam       m_ral_model;
+              |
+xmvlog: *E,NOIPRT (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_example.svh,12|14): Unrecognized declaration 'ral_sys_cam' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+(`include file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_example.svh line 12, file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv line 16)
+        a_layer_seq my_layer_seq;
+                  |
+xmvlog: *E,NOIPRT (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_example.svh,36|18): Unrecognized declaration 'a_layer_seq' could be an unsupported keyword, a spelling mistake or missing instance port list '()' [SystemVerilog].
+(`include file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_example.svh line 36, file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv line 16)
+        a_layer_seq my_layer_seq;
+                  |
+xmvlog: *E,NOTINF (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_example.svh,36|18): Interfaces are not allowed within tasks [SystemVerilog].
+(`include file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_example.svh line 36, file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/lab_test_pkg.sv line 16)
+	package worklib.lab_test_pkg:sv
+		errors: 8, warnings: 0
+file: /home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/tb_top.sv
+import lab_test_pkg::lab_test_example;
+                  |
+xmvlog: *E,NOPBIND (/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb/tb_top.sv,5|18): Package lab_test_pkg could not be bound.
+	module worklib.tb_top:sv
+		errors: 0, warnings: 0
+	Total errors/warnings found outside modules and primitives:
+		errors: 1, warnings: 0
+xrun: *E,VLGERR: An error occurred during parsing.  Review the log file for errors with the code *E and fix those identified problems to proceed.  Exiting with code (status 1).
+TOOL:	xrun(64)	19.03-s009: Exiting on Dec 25, 2023 at 04:21:17 MSK  (total: 00:00:03)

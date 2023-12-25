@@ -1,0 +1,19 @@
+//
+// File created by:  xrun
+// Do not modify this file
+//
+-sv
+-INCDIR
+/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//tb
+-INCDIR
+/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//dstream_uvc
+-INCDIR
+/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//a_layer_uvc
+-INCDIR
+/home/e.gerasimenko/Study/sem3/UVM4DV/lab07_layering_and_regs/layering_and_regs_example/sim/..//cam_ral
+-I_INCDIR
+/tools/cadence/XCELIUM/1903/tools/methodology/UVM/CDNS-1.1d/sv/src
+-DEFINE
+USE_PARAMETERIZED_WRAPPER
+-I_INCDIR
+/tools/cadence/XCELIUM/1903/tools/methodology/UVM/CDNS-1.1d/additions/sv
